@@ -4,26 +4,85 @@
   var $l = root.$l = function(selector) {
     var elements;
     if (selector instanceof HTMLElement) {
-      elements = [HTMLElement];
-    } else
-    { elements = [].slice.call(document.querySelectorAll(selector)); }
-    return new DOMNodeCollection(elements)
+      elements = [selector];
+    }
+    else {
+      elements = [].slice.call(document.querySelectorAll(selector));
+    }
+    return new DOMNodeCollection(elements);
   };
 
-  var DOMNodeCollection = function(elements) {
-    this.elements = elements;
-    return this;
+  var DOMNodeCollection = function(nodes) {
+    this.nodes = [].slice.call(nodes);
   };
-  
+
   DOMNodeCollection.prototype = {
     html: function(content) {
       if (typeof content !== 'undefined') {
-        this.elements.forEach(function(element) {
+        this.nodes.forEach(function(element) {
           element.innerHTML = content;
         });
-      } else {return this.elements[0].innerHTML;}
-    }
-  }
+      }
+      else {
+        return this.nodes[0].innerHTML;
+      }
+    },
 
+    empty: function() {
+      this.nodes.forEach(function(element){
+        element.innerHTML = "";
+      });
+    },
+
+    append: function(content) {
+      var that = this;
+      if (typeof content === 'string') {
+        that.nodes[0].innerHTML += content;
+      }
+      else if (content instanceof DOMNodeCollection) {
+        content.elements.forEach(function(element) {
+          $l(that.nodes[0]).append(element);
+        });
+      }
+      else if (content instanceof HTMLElement) {
+        that.nodes[0].appendChild(content);
+      }
+    },
+
+    children: function() {
+      var chillens = [];
+      this.nodes.forEach(function(element){
+        [].slice.call(element.children).forEach(function(child){
+          chillens.push(child);
+        });
+      });
+      return new DOMNodeCollection(chillens);
+    },
+
+    parent: function() {
+
+    },
+
+    find: function() {
+
+    },
+
+    remove: function() {
+
+    },
+
+    attr: function() {
+
+    },
+
+    addClass: function() {
+
+    },
+
+    removeClass: function() {
+
+    }
+
+  }
 
 }(this));
