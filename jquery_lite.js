@@ -51,8 +51,8 @@
 
     children: function() {
       var chillens = [];
-      this.nodes.forEach(function(element){
-        [].slice.call(element.children).forEach(function(child){
+      this.nodes.forEach(function(node){
+        [].slice.call(node.children).forEach(function(child){
           chillens.push(child);
         });
       });
@@ -60,7 +60,11 @@
     },
 
     parent: function() {
-
+      var parents = [];
+      this.nodes.forEach(function(node){
+        parents.push(node.parentNode);
+      });
+      return new DOMNodeCollection(parents);
     },
 
     find: function() {
@@ -68,7 +72,9 @@
     },
 
     remove: function() {
-
+      this.nodes.forEach(function(node){
+        node.parentNode.removeChild(node);
+      });
     },
 
     attr: function() {
