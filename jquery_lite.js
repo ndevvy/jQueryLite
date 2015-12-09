@@ -94,6 +94,18 @@
 
     removeClass: function() {
 
+    },
+
+    on: function(e, callback){
+      this.nodes.forEach(function(node){
+        node.addEventListener(e, callback);
+      });
+    },
+
+    off: function(e, callback){
+      this.nodes.forEach(function(node){
+        node.removeEventListener(e, callback);
+      });
     }
 
   }
