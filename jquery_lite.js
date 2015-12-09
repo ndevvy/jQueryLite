@@ -1,10 +1,19 @@
 (function(root) {
   console.log('jquery lite running');
+  var ON_READY_FUNCTIONS = [];
 
   var $l = root.$l = function(selector) {
     var elements;
     if (selector instanceof HTMLElement) {
       elements = [selector];
+    }
+    else if (typeof selector === 'function') {
+      if (document.readyState !== 'complete') {
+        ON_READY_FUNCTIONS.push(selector);
+      }
+      else {
+        return selector();
+      }
     }
     else {
       elements = [].slice.call(document.querySelectorAll(selector));
@@ -107,7 +116,14 @@
         node.removeEventListener(e, callback);
       });
     }
-
   }
+
+  var timer = setInterval( function () {
+      if ( document.readyState !== 'complete' ) return;
+      clearInterval( timer );
+      ON_READY_FUNCTIONS.forEach(function(f){
+        return f();
+      });
+  }, 100 );
 
 }(this));
