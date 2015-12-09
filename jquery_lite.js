@@ -25,6 +25,55 @@
     this.nodes = [].slice.call(nodes);
   };
 
+  root.$l.extend = function(){
+    var result = {};
+    var args = [].slice.call(arguments);
+    args.forEach(function(arg){
+      for (var attrname in arg) {
+        result[attrname] = arg[attrname];
+      }
+    });
+    reassignArguments(arguments, result);
+    return result;
+  };
+
+  root.$l.ajax = function(options){
+    var defaults = {
+      success: function(data) {
+        console.log('success');
+        console.log(data);
+      },
+      error: function(data) {
+        console.error('an error occurred');
+      },
+      url: "",
+      method: 'GET',
+      data: '',
+      contentType: 'application/x-www-form-urlencoded'
+    };
+
+    $l.extend(defaults, options);
+
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+    } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState === 4) {
+        if (xmlhttp.status < 400) {
+          options.success(xmlhttp.responseText);
+        }
+        else {
+          options.error();
+        }
+      }
+    };
+    xmlhttp.open(options.method, options.url);
+    xmlhttp.send();
+  };
+
   DOMNodeCollection.prototype = {
     html: function(content) {
       if (typeof content !== 'undefined') {
@@ -115,7 +164,8 @@
       this.nodes.forEach(function(node){
         node.removeEventListener(e, callback);
       });
-    }
+    },
+
   }
 
   var timer = setInterval( function () {
@@ -125,5 +175,16 @@
         return f();
       });
   }, 100 );
+
+  var reassignArguments = function(args, result) {
+    console.log('reassigning');
+    args = [].slice.call(args);
+    args.forEach(function(arg){
+      for (var attrname in result) {
+        arg[attrname] = result[attrname];
+      }
+    });
+    return;
+  };
 
 }(this));
