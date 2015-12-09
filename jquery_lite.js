@@ -67,8 +67,15 @@
       return new DOMNodeCollection(parents);
     },
 
-    find: function() {
-
+    find: function(selector) {
+      var results = [];
+      this.nodes.forEach(function(node){
+        var subResults = [].slice.call(node.querySelectorAll(selector));
+        subResults.forEach(function(result){
+          results.push(result);
+        });
+      });
+      return new DOMNodeCollection(results);
     },
 
     remove: function() {
